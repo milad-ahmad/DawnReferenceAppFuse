@@ -7,11 +7,13 @@ import skip.ui.*
 
 import android.Manifest
 import android.app.Application
+import android.os.Build
 import android.graphics.Color as AndroidColor
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.SystemBarStyle
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +55,7 @@ open class MainActivity: AppCompatActivity {
     constructor() {
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         logger.info("starting activity")
@@ -69,16 +72,15 @@ open class MainActivity: AppCompatActivity {
 
         AppDelegate.shared.onLaunch()
 
-        // Example of requesting permissions on startup.
-        // These must match the permissions in the AndroidManifest.xml file.
-        //let permissions = listOf(
-        //    Manifest.permission.ACCESS_COARSE_LOCATION,
-        //    Manifest.permission.ACCESS_FINE_LOCATION
-        //    Manifest.permission.CAMERA,
-        //    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        //)
-        //let requestTag = 1
-        //ActivityCompat.requestPermissions(self, permissions.toTypedArray(), requestTag)
+        // Vraag runtime permissie voor de microfoon aan op Android
+        val permissions = kotlin.arrayOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+
+
+        val requestTag = 1
+        ActivityCompat.requestPermissions(this, permissions, requestTag)
     }
 
     override fun onStart() {

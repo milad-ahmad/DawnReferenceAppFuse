@@ -7,6 +7,8 @@
 
     <!-- permissions needed for using the internet or an embedded WebKit browser -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
 
     <application
@@ -15,6 +17,11 @@
         android:supportsRtl="true"
         android:allowBackup="true"
         >
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/media3_notification_small_icon" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
