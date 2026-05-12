@@ -55,7 +55,6 @@ open class MainActivity: AppCompatActivity {
     constructor() {
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         logger.info("starting activity")
@@ -73,14 +72,16 @@ open class MainActivity: AppCompatActivity {
         AppDelegate.shared.onLaunch()
 
         // Vraag runtime permissie voor de microfoon aan op Android
-        val permissions = kotlin.arrayOf(
+        val permissions = mutableListOf(
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.POST_NOTIFICATIONS
         )
 
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         val requestTag = 1
-        ActivityCompat.requestPermissions(this, permissions, requestTag)
+        ActivityCompat.requestPermissions(this, permissions.toTypedArray(), requestTag)
     }
 
     override fun onStart() {

@@ -63,24 +63,26 @@ public final class MiniPlayer {
     }
     
 
+
     public func startUpdatingProgress() {
-        stopUpdatingProgress()
-        
-        progressTask = Task { @MainActor [weak self] in
-            while !Task.isCancelled {
-                guard let self, let player = self.player else { return }
-                
-                if player.isPlaying {
-                    self.progress = player.duration > 0 ? player.currentTime / player.duration : 0
-                } else {
-                    self.isPlaying = false
-                    self.stopUpdatingProgress()
+            stopUpdatingProgress()
+            
+            progressTask = Task { @MainActor [weak self] in
+                while !Task.isCancelled {
+                    guard let self, let player = self.player else { return }
+                    
+                    if player.isPlaying {
+                        self.progress = player.duration > 0 ? player.currentTime / player.duration : 0
+                    } else {
+                        self.progress = 1.0
+                        self.isPlaying = false
+                        self.stopUpdatingProgress()
+                    }
+                    
+                    try? await Task.sleep(nanoseconds: 50_000_000)
                 }
-                
-                try? await Task.sleep(nanoseconds: 50_000_000)
             }
         }
-    }
     
 
     public func stopUpdatingProgress() {
@@ -102,4 +104,5 @@ public final class MiniPlayer {
     public var playingURL: URL? {
         currentURL
     }
+    
 }

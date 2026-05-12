@@ -57,6 +57,9 @@ public struct DateTestView: View {
                     .padding()
             }
             .padding()
+            .onDisappear {
+                stopClock()
+            }
         }
     }
 }
@@ -71,8 +74,6 @@ extension DateTestView {
         let iso = ISO8601DateFormatter().string(from: now)
         
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .long
         formatter.timeZone = .current
         formatter.dateFormat = "HH:mm:ss"
         
@@ -118,16 +119,16 @@ extension DateTestView {
     public func midnightTest() {
         let calendar = Calendar.current
         
-        let before = calendar.date(
-            from: DateComponents(
-                year: 2026,
-                month: 5,
-                day: 11,
-                hour: 23,
-                minute: 59,
-                second: 59
-            )
-        )!
+        guard let before = calendar.date(from: DateComponents(
+            year: 2026,
+            month: 5,
+            day: 11,
+            hour: 23,
+            minute: 59,
+            second: 59
+        )) else {
+            return
+        }
         
         let after = before.addingTimeInterval(2)
         
@@ -155,22 +156,24 @@ extension DateTestView {
 extension DateTestView {
     
     public func startClock() {
-        stopClock()
-        
-        timerTask = Task {
-            while !Task.isCancelled {
+            stopClock()
+            
+            timerTask = Task {
                 let formatter = DateFormatter()
                 formatter.dateFormat = "HH:mm:ss"
                 formatter.timeZone = .current
                 
-                await MainActor.run {
-                    liveTime = formatter.string(from: Date())
+                while !Task.isCancelled {
+                    let timeString = formatter.string(from: Date())
+                    
+                    await MainActor.run {
+                        liveTime = timeString
+                    }
+                    
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
                 }
-                
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
             }
         }
-    }
     
     public func stopClock() {
         timerTask?.cancel()
