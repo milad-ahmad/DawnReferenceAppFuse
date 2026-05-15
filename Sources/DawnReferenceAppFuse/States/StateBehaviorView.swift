@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct StateBehaviorTest: View {
+public struct StateBehaviorView: View {
     @State public var currentState: ViewState = .empty
     
     public init() {}
@@ -44,7 +44,7 @@ public struct StateBehaviorTest: View {
                         .padding(.horizontal)
                     
                     Button {
-                        simulateNetworkCall(success: true)
+                        simulateNetworkCall(success: false)
                     } label: {
                         Text("Retry")
                             .fontWeight(.bold)

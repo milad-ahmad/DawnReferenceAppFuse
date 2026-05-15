@@ -36,6 +36,14 @@ public struct DateTestView: View {
                     midnightTest()
                 }
                 
+                Button("Month Boundary Test") {
+                    monthBoundaryTest()
+                }
+                
+                Button("Daylight Savings Test") {
+                    daylightSavingTimeTest()
+                }
+                
                 Button("Start Live Clock") {
                     startClock()
                 }
@@ -149,6 +157,67 @@ extension DateTestView {
         \(calendar.isDate(before, inSameDayAs: after))
         """
     }
+
+        public func monthBoundaryTest() {
+            let calendar = Calendar.current
+            
+            guard let nonLeapYearDate = calendar.date(from: DateComponents(year: 2026, month: 2, day: 28, hour: 12)) else {
+                return
+            }
+            
+            guard let nextDay = calendar.date(byAdding: .day, value: 1, to: nonLeapYearDate) else {
+                return
+            }
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            formatter.timeZone = .current
+            
+            output = """
+            Month boundary test
+            
+            Before (Feb 28, 2026):
+            \(formatter.string(from: nonLeapYearDate))
+            
+            After (+1 Day):
+            \(formatter.string(from: nextDay))
+            
+            Expected: 2026-03-01
+            """
+        }
+
+        public func daylightSavingTimeTest() {
+            let calendar = Calendar.current
+            let amsterdamTimeZone = TimeZone(identifier: "Europe/Amsterdam")!
+            
+            var components = DateComponents()
+            components.year = 2026
+            components.month = 3
+            components.day = 29
+            components.hour = 1
+            components.minute = 59
+            components.timeZone = amsterdamTimeZone
+            
+            guard let beforeDST = calendar.date(from: components) else {
+                return
+            }
+            
+            let afterDST = beforeDST.addingTimeInterval(120)
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            formatter.timeZone = amsterdamTimeZone
+            
+            output = """
+            Daylight savings transition test
+            
+            Before (01:59:00 CET):
+            \(formatter.string(from: beforeDST))
+            
+            After (+120 seconds):
+            \(formatter.string(from: afterDST))
+            """
+        }
 }
 
 // MARK: - Live Clock

@@ -47,6 +47,20 @@ public struct MainView: View {
                  DateTestView()
             }
              
+            Tab("Photo Library", systemImage: "photo", value: 4) {
+                PhotoLibrary()
+            }
+             
+            Tab("State Behaviour", systemImage: "figure.walk.triangle.fill", value: 5) {
+                 StateBehaviorView()
+            }
+             
+            Tab("Network", systemImage: "network", value: 6) {
+                  NetworkView()
+            }
+             
+             
+             
             
             
             

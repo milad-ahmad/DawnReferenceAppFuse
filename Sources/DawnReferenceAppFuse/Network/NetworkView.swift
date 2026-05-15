@@ -9,11 +9,9 @@
 import SwiftUI
 import Foundation
 
-/**
- * A view to test network connectivity, offline states, and recovery (retry) behavior.
- */
-public struct ConnectivityTestView: View {
-    @State public var dataResult: String = "Druk op de knop om data op te halen"
+
+public struct NetworkView: View {
+    @State public var dataResult: String = "Press the button to fetch data"
     @State public var isFetching: Bool = false
     @State public var hasError: Bool = false
 
@@ -26,7 +24,7 @@ public struct ConnectivityTestView: View {
                 .foregroundColor(hasError ? .red : .green)
             
             if isFetching {
-                ProgressView("Bezig met netwerkverzoek...")
+                ProgressView("Processing network request...")
                     .padding()
             } else {
                 Text(dataResult)
@@ -37,11 +35,11 @@ public struct ConnectivityTestView: View {
             }
 
             if hasError {
-                Text("Offline of netwerkfout gedetecteerd.")
+                Text("Offline or network error detected.")
                     .foregroundColor(.red)
                     .font(.subheadline)
 
-                // Recovery Action (Retry)
+                // Retry
                 Button(action: {
                     fetchData()
                 }) {
@@ -54,7 +52,7 @@ public struct ConnectivityTestView: View {
                         .cornerRadius(10)
                 }
             } else {
-                // Happy Path Action
+                // Happy Path
                 Button(action: {
                     fetchData()
                 }) {
@@ -72,14 +70,10 @@ public struct ConnectivityTestView: View {
         .navigationTitle("Connectivity Test")
     }
 
-    /**
-     * Attempts to fetch data from a public test API.
-     * Handles both success and offline/error scenarios.
-     */
     public func fetchData() {
         isFetching = true
         hasError = false
-        dataResult = "Verbinden met server..."
+        dataResult = "Connecting to server..."
 
         // Test API URL
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/todos/1") else {
@@ -88,18 +82,16 @@ public struct ConnectivityTestView: View {
 
         Task {
             do {
-                // Probeer data op te halen
                 let (data, _) = try await URLSession.shared.data(from: url)
                 if let jsonString = String(data: data, encoding: .utf8) {
                     await MainActor.run {
-                        self.dataResult = "Succes! Data ontvangen:\n\(jsonString)"
+                        self.dataResult = "Successfully fetched data :\n\(jsonString)"
                         self.isFetching = false
                     }
                 }
             } catch {
-                // Vang offline status of netwerkfout op
                 await MainActor.run {
-                    self.dataResult = "Fout bij ophalen:\n\(error.localizedDescription)"
+                    self.dataResult = "Error during fetching:\n\(error.localizedDescription)"
                     self.hasError = true
                     self.isFetching = false
                 }

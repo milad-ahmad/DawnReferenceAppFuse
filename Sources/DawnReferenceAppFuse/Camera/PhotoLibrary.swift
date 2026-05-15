@@ -1,8 +1,6 @@
 import SwiftUI
 import SkipKit
 
-/// A view that handles displaying a selected image and presents options to pick or take a new photo.
-/// Utilizes SkipKit for cross-platform media selection on both iOS and Android.
 public struct PhotoLibrary: View {
     @State public var selectedImageURL: URL? = nil
     @State public var selectedImage: UIImage? = nil
@@ -13,7 +11,8 @@ public struct PhotoLibrary: View {
     public init() {}
     
     public var body: some View {
-        VStack {
+        VStack(spacing: 20) {
+            
             if let selectedImage = selectedImage {
                 Image(uiImage: selectedImage)
                     .resizable()
@@ -21,7 +20,12 @@ public struct PhotoLibrary: View {
                     .frame(height: 300)
                     .clipShape(RoundedRectangle(cornerRadius: 25))
             } else {
-                Text("No image is selected")
+                VStack {
+                    Text("No image is selected")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(height: 300)
             }
             
             Button {
@@ -40,7 +44,7 @@ public struct PhotoLibrary: View {
             Button {
                 showingLibrary = true
             } label: {
-                Text("Select photo")
+                Text("Select from Gallery")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -50,6 +54,7 @@ public struct PhotoLibrary: View {
             }
             .withMediaPicker(type: .library, isPresented: $showingLibrary, selectedImageURL: $selectedImageURL)
         }
+        .padding()
         .onChange(of: selectedImageURL) { url in
             if let url = url {
                 loadImage(from: url)
@@ -57,17 +62,19 @@ public struct PhotoLibrary: View {
         }
     }
     
-    /// Loads the image data from a local file URL and updates the view state.
-    ///
-    /// - Parameter url: The local file URL pointing to the captured or selected image.
-    private func loadImage(from url: URL) {
+    public func loadImage(from url: URL) {
+        #if !SKIP
         Task {
-            if let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 await MainActor.run {
                     self.selectedImage = image
                 }
             }
         }
+        #else
+        if let image = UIImage(contentsOfFile: url.absoluteString) {
+            self.selectedImage = image
+        }
+        #endif
     }
 }
