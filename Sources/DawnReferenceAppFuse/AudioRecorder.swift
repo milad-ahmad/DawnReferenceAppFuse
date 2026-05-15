@@ -16,7 +16,8 @@ public final class AudioRecorder {
     public var isRecording: Bool = false
     public var meterLevel: Float = 0
     public var meterHistory: [Float] = []
-     
+
+    public var error: Error?
     private(set) public var recorder: AVAudioRecorder?
     private(set) public var fileURL: URL?
     
@@ -81,8 +82,9 @@ public final class AudioRecorder {
             isRecording = true
             
             startMetering()
-        } catch {
-            print("Startfailed: \(error)")
+        } catch let err {
+            print("Startfailed: \(err)")
+            self.error = err
         }
     }
 
@@ -105,7 +107,7 @@ public final class AudioRecorder {
                     self.meterHistory.removeFirst(self.meterHistory.count - 100)
                 }
                 #else
-                self.meterLevel = Float.random(in: 0.05...0.3)
+                self.meterLevel = 0.0
                 #endif
                 
                 try? await Task.sleep(nanoseconds: 50_000_000)
