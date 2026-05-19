@@ -11,9 +11,11 @@ import Foundation
 
 
 public struct NetworkView: View {
-    @State public var dataResult: String = "Press the button to fetch data"
-    @State public var isFetching: Bool = false
-    @State public var hasError: Bool = false
+    @State var dataResult: String = "Press the button to fetch data"
+    @State var isFetching: Bool = false
+    @State var hasError: Bool = false
+    
+    private let cornerRadius: Double = 10
 
     public init() {}
 
@@ -21,7 +23,7 @@ public struct NetworkView: View {
         VStack(spacing: 20) {
             Image(systemName: hasError ? "wifi.slash" : "wifi")
                 .font(.system(size: 60))
-                .foregroundColor(hasError ? .red : .green)
+                .foregroundStyle(hasError ? .red : .green)
             
             if isFetching {
                 ProgressView("Processing network request...")
@@ -36,7 +38,7 @@ public struct NetworkView: View {
 
             if hasError {
                 Text("Offline or network error detected.")
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
                     .font(.subheadline)
 
                 // Retry
@@ -48,8 +50,8 @@ public struct NetworkView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 }
             } else {
                 // Happy Path
@@ -61,8 +63,9 @@ public struct NetworkView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+
                 }
             }
         }
@@ -70,7 +73,8 @@ public struct NetworkView: View {
         .navigationTitle("Connectivity Test")
     }
 
-    public func fetchData() {
+    @MainActor
+    private func fetchData() {
         isFetching = true
         hasError = false
         dataResult = "Connecting to server..."
@@ -87,6 +91,7 @@ public struct NetworkView: View {
                     await MainActor.run {
                         self.dataResult = "Successfully fetched data :\n\(jsonString)"
                         self.isFetching = false
+                        self.hasError = false
                     }
                 }
             } catch {

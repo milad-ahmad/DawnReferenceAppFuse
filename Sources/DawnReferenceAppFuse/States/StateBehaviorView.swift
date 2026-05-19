@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct StateBehaviorView: View {
-    @State public var currentState: ViewState = .empty
+    @State var currentState: ViewState = .empty
     
     public init() {}
     
@@ -23,7 +23,7 @@ public struct StateBehaviorView: View {
             case .empty:
                 VStack(spacing: 12) {
                     Image(systemName: "tray.fill")
-                        .font(.system(size: 50))
+                        .font(.title)
                         .foregroundColor(.gray)
                     Text("No data found.")
                         .font(.headline)
@@ -34,7 +34,7 @@ public struct StateBehaviorView: View {
             case .error(let message):
                 VStack(spacing: 12) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 50))
+                        .font(.title)
                         .foregroundColor(.red)
                     Text("Something went wrong")
                         .font(.headline)
@@ -44,7 +44,7 @@ public struct StateBehaviorView: View {
                         .padding(.horizontal)
                     
                     Button {
-                        simulateNetworkCall(success: false)
+                        simulateNetworkCall(success: Bool.random())
                     } label: {
                         Text("Retry")
                             .fontWeight(.bold)
@@ -78,10 +78,13 @@ public struct StateBehaviorView: View {
         .navigationTitle("State Tests")
     }
     
-    public func simulateNetworkCall(success: Bool) {
+    private func simulateNetworkCall(success: Bool) {
+        
         currentState = .loading
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(1.5))
+            
             if success {
                 self.currentState = .success(["Document A", "Document B", "Document C"])
             } else {
