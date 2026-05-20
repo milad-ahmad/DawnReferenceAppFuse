@@ -81,12 +81,23 @@ public struct NetworkView: View {
 
         // Test API URL
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/todos/1") else {
+            self.dataResult = "Invalid url link"
+            self.hasError = true
+            self.isFetching = false
             return
         }
 
         Task {
             do {
-                let (data, _) = try await URLSession.shared.data(from: url)
+                let (data, response) = try await URLSession.shared.data(from: url)
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw URLError(.badServerResponse)
+                }
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    throw URLError(.badServerResponse)
+                }
+
                 if let jsonString = String(data: data, encoding: .utf8) {
                     await MainActor.run {
                         self.dataResult = "Successfully fetched data :\n\(jsonString)"
