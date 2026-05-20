@@ -58,6 +58,14 @@ public struct MainView: View {
             Tab("Network", systemImage: "network", value: 6) {
                 NetworkView()
             }
+            
+            Tab("Face ID", systemImage: "faceid", value: 7) {
+                #if os(iOS)
+                BiometricView()
+                #else
+                AndroidBiometricView()
+                #endif
+            }
 
         }
         .tabViewStyle(.automatic)
