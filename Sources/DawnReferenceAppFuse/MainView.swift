@@ -11,6 +11,7 @@ import SwiftUI
 public struct MainView: View {
 
     @State public var selectedTab: Int = 0
+    @State public var vm: BiometricViewModel
 
     public var body: some View {
 
@@ -60,11 +61,7 @@ public struct MainView: View {
             }
             
             Tab("Face ID", systemImage: "faceid", value: 7) {
-                #if os(iOS)
-                BiometricView()
-                #else
-                AndroidBiometricView()
-                #endif
+                BiometricView(viewModel: vm)
             }
 
         }
