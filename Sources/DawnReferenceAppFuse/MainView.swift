@@ -1,78 +1,58 @@
-//
-//  File.swift
-//  dawn-reference-app-fuse
-//
-//  Created by Milad Ahmad on 08-05-2026.
-//
-
 import Foundation
 import SwiftUI
 
 public struct MainView: View {
-
     @State public var selectedTab: Int = 0
     @State public var vm: BiometricViewModel
 
-    public var body: some View {
-
-        ZStack {
-
-            tabView
-        }
-
+    public init(vm: BiometricViewModel) {
+        self.vm = vm
     }
-
-    @ViewBuilder
-    public var tabView: some View {
-
+ 
+    public var body: some View {
         TabView(selection: $selectedTab) {
-
-            Tab("home", systemImage: "house", value: 0) {
+            
+            Tab("Home", systemImage: "house", value: 0) {
                 HomeView()
-
-            }
-
-            Tab("Audio", systemImage: "waveform", value: 1) {
-                AudioView()
-            }
-
-            Tab("Notifications", systemImage: "bell", value: 2) {
-                NotificationView()
-            }
-
-            Tab("Dates", systemImage: "calendar", value: 3) {
-                DateTestView()
-            }
-
-            Tab("Photo Library", systemImage: "photo", value: 4) {
-                PhotoLibrary()
-            }
-
-            Tab(
-                "State Behaviour",
-                systemImage: "figure.walk.triangle.fill",
-                value: 5
-            ) {
-                StateBehaviorView()
-            }
-
-            Tab("Network", systemImage: "network", value: 6) {
-                NetworkView()
             }
             
-            Tab("Face ID", systemImage: "faceid", value: 7) {
-                BiometricView(viewModel: vm)
+            Tab("Features", systemImage: "list.bullet", value: 1) {
+                FeaturesListView(vm: vm)
             }
-
+            
         }
         .tabViewStyle(.automatic)
-
     }
-
 }
 
-//public extension View {
-//    func setGradient() -> some View {
-//        LinearGradient(colors: [.black, .gray], startPoint: .bottomLeading ,endPoint: .topTrailing).ignoresSafeArea()
-//    }
-//}
+public struct FeaturesListView: View {
+    public var vm: BiometricViewModel
+    
+    public init(vm: BiometricViewModel) {
+        self.vm = vm
+    }
+    
+    public var body: some View {
+        NavigationStack {
+            List {
+                Section("Hardware & Sensors") {
+                    NavigationLink("Face ID & Biometrics", destination: BiometricView(viewModel: vm))
+                    NavigationLink("Camera & Photo Library", destination: PhotoLibrary())
+                    NavigationLink("Audio Recorder", destination: AudioView())
+                }
+                
+                Section("System & UI") {
+                    NavigationLink("Presentations (Sheets)", destination: PresentationView())
+                    NavigationLink("Notifications", destination: NotificationView())
+                    NavigationLink("Dates & Times", destination: DateTestView())
+                }
+                
+                Section("Architecture & Network") {
+                    NavigationLink("Network Connectivity", destination: NetworkView())
+                    NavigationLink("State Behaviour", destination: StateBehaviorView())
+                }
+            }
+            .navigationTitle("Features")
+        }
+    }
+}

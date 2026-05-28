@@ -1,11 +1,3 @@
-//
-//  BiometricView 2.swift
-//  dawn-reference-app-fuse
-//
-//  Created by Milad Ahmad on 22-05-2026.
-//
-
-
 import SwiftUI
 import Foundation
 import SkipModel

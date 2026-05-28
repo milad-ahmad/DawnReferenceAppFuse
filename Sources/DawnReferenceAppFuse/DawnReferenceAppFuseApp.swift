@@ -12,6 +12,7 @@ let logger: Logger = Logger(subsystem: "com.example.dawnreferenceappfuse", categ
     @State public var vm: BiometricViewModel = BiometricViewModel()
     /* SKIP @bridge */public init() {
     }
+    
     public var body: some View {
         MainView(vm: vm)
     }
