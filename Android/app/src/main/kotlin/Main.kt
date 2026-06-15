@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.MaterialTheme
 import androidx.core.app.ActivityCompat
-
 internal val logger: SkipLogger = SkipLogger(subsystem = "dawn.reference.app.fuse", category = "DawnReferenceAppFuse")
 
 private typealias AppRootView = DawnReferenceAppFuseRootView
@@ -57,6 +56,14 @@ open class MainActivity: AppCompatActivity {
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
+        val activityRef = java.lang.ref.WeakReference(this)
+        dawn.reference.app.fuse.BiometricModel.model.androidAction = { callback: dawn.reference.app.fuse.BiometricCallback ->
+            activityRef.get()?.let { activity ->
+                val biometricModel = AndroidBiometricModel(activity)
+                biometricModel.authenticate(callback)
+            }
+        }
+
         logger.info("starting activity")
         UIApplication.launch(this)
         enableEdgeToEdge()

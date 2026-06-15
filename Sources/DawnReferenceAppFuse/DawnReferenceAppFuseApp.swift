@@ -11,7 +11,7 @@ let logger: Logger = Logger(subsystem: "com.example.dawnreferenceappfuse", categ
 /* SKIP @bridge */public struct DawnReferenceAppFuseRootView : View {
     /* SKIP @bridge */public init() {
     }
-
+    
     public var body: some View {
         MainView()
     }

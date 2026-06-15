@@ -89,3 +89,7 @@ android {
         }
     }
 }
+
+dependencies {
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+}
