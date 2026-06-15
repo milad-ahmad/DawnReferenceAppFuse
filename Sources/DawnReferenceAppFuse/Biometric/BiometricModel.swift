@@ -1,19 +1,14 @@
-//
-//  IOSBiometricModel.swift
-//  dawn-reference-app-fuse
-//
-//  Created by Milad Ahmad on 28-05-2026.
-//
-
 import Foundation
 #if !os(Android)
 import LocalAuthentication
+#endif
 
-public class IOSBiometricModel {
+// SKIP @bridgeMembers
+public class BiometricModel {
+    @MainActor public static var androidAction: (BiometricCallback) -> Void = { _ in }
     
-    public init() {}
-
-    public func authenticate() async -> Bool {
+    #if !os(Android)
+    public static func authenticate() async -> Bool {
         let context = LAContext()
         var error: NSError?
         
@@ -23,5 +18,5 @@ public class IOSBiometricModel {
         
         return false
     }
+    #endif
 }
-#endif

@@ -9,8 +9,6 @@ public class BiometricViewModel {
     public var statusMessage: String = "Not logged in"
     public var statusColor: Color = .gray
     
-    public static var androidAction: (BiometricCallback) -> Void = { _ in }
-    
     public init() {}
 
     public func login() {
@@ -18,17 +16,16 @@ public class BiometricViewModel {
         statusColor = .blue
         
         #if os(Android)
-        BiometricViewModel.androidAction(BiometricCallback { success in
+        BiometricModel.androidAction(BiometricCallback(action: { success in
             Task { @MainActor in
                 self.isAuthenticated = success
                 self.statusMessage = success ? "Successfully logged in" : "Authentication failed"
                 self.statusColor = success ? .green : .red
             }
-        })
+        }))
         #else
         Task {
-            let model = IOSBiometricModel()
-            let success = await model.authenticate()
+            let success = await BiometricModel.authenticate()
             
             self.isAuthenticated = success
             self.statusMessage = success ? "Successfully logged in" : "Authentication failed"
