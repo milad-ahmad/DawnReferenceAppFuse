@@ -5,10 +5,16 @@ import LocalAuthentication
 
 // SKIP @bridgeMembers
 public class BiometricModel {
-    @MainActor public static var androidAction: (BiometricCallback) -> Void = { _ in }
+    
+    @MainActor public static let model = BiometricModel()
+    
+    public init() {
+    }
+    
+    @MainActor public var androidAction: (BiometricCallback) -> Void = { _ in }
     
     #if !os(Android)
-    public static func authenticate() async -> Bool {
+    public func authenticate() async -> Bool {
         let context = LAContext()
         var error: NSError?
         

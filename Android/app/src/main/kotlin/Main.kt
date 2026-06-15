@@ -57,7 +57,7 @@ open class MainActivity: AppCompatActivity {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         val activityRef = java.lang.ref.WeakReference(this)
-        dawn.reference.app.fuse.BiometricModel.androidAction = { callback: dawn.reference.app.fuse.BiometricCallback ->
+        dawn.reference.app.fuse.BiometricModel.model.androidAction = { callback: dawn.reference.app.fuse.BiometricCallback ->
             activityRef.get()?.let { activity ->
                 val biometricModel = AndroidBiometricModel(activity)
                 biometricModel.authenticate(callback)
