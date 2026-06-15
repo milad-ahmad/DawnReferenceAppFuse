@@ -1,9 +1,16 @@
+//
+//  FeaturesListView.swift
+//  dawn-reference-app-fuse
+//
+//  Created by Milad Ahmad on 15-06-2026.
+//
+import SwiftUI
+
 
 public struct FeaturesListView: View {
-    public var vm: BiometricViewModel
+    @State public var vm = BiometricViewModel()
     
-    public init(vm: BiometricViewModel) {
-        self.vm = vm
+    public init() {
     }
     
     public var body: some View {
