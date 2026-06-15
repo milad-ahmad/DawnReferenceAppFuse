@@ -16,22 +16,23 @@ public class BiometricViewModel {
         statusColor = .blue
         
         #if os(Android)
-        BiometricModel.androidAction(BiometricCallback(action: { success in
+        BiometricModel.model.androidAction(BiometricCallback(action: { success in
             Task { @MainActor in
-                self.isAuthenticated = success
-                self.statusMessage = success ? "Successfully logged in" : "Authentication failed"
-                self.statusColor = success ? .green : .red
+                self.handleAuth(success: success)
             }
         }))
         #else
         Task {
-            let success = await BiometricModel.authenticate()
-            
+            let success = await BiometricModel.model.authenticate()
+            self.handleAuth(success: success)
+        }
+        #endif
+    }
+    
+    public func handleAuth(success: Bool) {
             self.isAuthenticated = success
             self.statusMessage = success ? "Successfully logged in" : "Authentication failed"
             self.statusColor = success ? .green : .red
-        }
-        #endif
     }
     
     public func logout() {
