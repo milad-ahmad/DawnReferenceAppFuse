@@ -10,12 +10,34 @@ let logger: Logger = Logger(subsystem: "com.example.dawnreferenceappfuse", categ
 /// The default implementation merely loads the `ContentView` for the app and logs a message.
 /* SKIP @bridge */public struct DawnReferenceAppFuseRootView : View {
     @State public var vm: BiometricViewModel = BiometricViewModel()
+    @State public var router: AppRouter = AppRouter()
     /* SKIP @bridge */public init() {
     }
     
     public var body: some View {
-        MainView(vm: vm)
-    }
+            VStack(spacing: 0) {
+                if let error = router.errorMessage {
+                    Text(error)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.red)
+                        .cornerRadius(8)
+                        .padding()
+                }
+                
+                switch router.currentRoute {
+                case .home:
+                    MainView(vm: vm)
+                case .location:
+                    LocationView()
+                case .settings:
+                    SettingsFeatureView()
+                }
+            }
+            .onOpenURL { url in
+                router.handle(url: url)
+            }
+        }
 }
 
 /// Global application delegate functions.

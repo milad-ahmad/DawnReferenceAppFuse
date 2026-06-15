@@ -229,6 +229,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to take photos to add them to our app";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need your Face ID to log in";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for this feature";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to your microphone for recording";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photos to add them to our app";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -247,6 +248,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to take photos to add them to our app";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need your Face ID to log in";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for this feature";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to your microphone for recording";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photos to add them to our app";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;

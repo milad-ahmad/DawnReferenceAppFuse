@@ -17,7 +17,7 @@ kotlin {
 }
 
 android {
-    namespace = group as String
+    namespace = "dawn.reference.app.fuse"
     compileSdk = libs.versions.android.sdk.compile.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.toVersion(libs.versions.jvm.get())
