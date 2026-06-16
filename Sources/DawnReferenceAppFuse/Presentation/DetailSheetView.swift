@@ -34,7 +34,7 @@ public struct DetailSheetView: View {
                 .foregroundColor(.white)
                 .cornerRadius(8)
                 .alert("Alert", isPresented: $showNestedAlert) {
-                    Button("Ok", role: .cancel) {}
+                    Button("OK", role: .cancel) {}
                 } message: {
                     Text(
                         "This tests if Skip can show an alert on top of a \(isFullScreen ? "full screen cover" : "sheet") in Android."
