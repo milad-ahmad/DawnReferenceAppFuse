@@ -1,3 +1,20 @@
+//
+//  LocationManager.swift
+//  dawn-reference-app-fuse
+//
+//  Created by Milad Ahmad on 16-06-2026.
+//
+import Foundation
+import SkipFuse
+import Observation
+import SwiftUI
+
+#if os(iOS)
+import CoreLocation
+#else
+import SkipDevice
+import SkipKit
+#endif
 
 @MainActor
 @Observable
@@ -9,23 +26,23 @@ public final class LocationManager: @unchecked Sendable {
     public var error: Error?
     
     #if os(iOS)
-    private let clManager = CLLocationManager()
-    private var delegate: LocationDelegate?
+    private let coreLocationManager = CLLocationManager()
+    private var locationDelegate: LocationDelegate?
     #else
-    private var task: Task<Void, Never>?
+    private var updateTask: Task<Void, Never>?
     #endif
     
     public init() {
         #if os(iOS)
-        let del = LocationDelegate(parent: self)
-        self.delegate = del
-        self.clManager.delegate = del
+        let delegate = LocationDelegate(parent: self)
+        self.locationDelegate = delegate
+        self.coreLocationManager.delegate = delegate
         #endif
     }
     
     public func request() {
         #if os(iOS)
-        clManager.requestWhenInUseAuthorization()
+        coreLocationManager.requestWhenInUseAuthorization()
         #else
         Task { @MainActor in _ = await PermissionManager.requestLocationPermission(precise: true, always: false) }
         #endif
@@ -33,31 +50,31 @@ public final class LocationManager: @unchecked Sendable {
     
     public func start() {
         #if os(iOS)
-        guard clManager.authorizationStatus != .denied, clManager.authorizationStatus != .restricted else {
+        guard coreLocationManager.authorizationStatus != .denied, coreLocationManager.authorizationStatus != .restricted else {
             permissionDenied = true
             return
         }
         permissionDenied = false
-        clManager.desiredAccuracy = kCLLocationAccuracyBest
-        clManager.startUpdatingLocation()
+        coreLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+        coreLocationManager.startUpdatingLocation()
         isUpdating = true
         #else
-        task?.cancel()
-        task = Task { @MainActor [weak self] in
-            guard let self, await PermissionManager.requestLocationPermission(precise: true, always: false).isAuthorized else {
+        updateTask?.cancel()
+        updateTask = Task { @MainActor [weak self] in
+            guard await PermissionManager.requestLocationPermission(precise: true, always: false).isAuthorized == true else {
                 self?.permissionDenied = true
                 return
             }
-            self.permissionDenied = false
-            self.isUpdating = true
+            self?.permissionDenied = false
+            self?.isUpdating = true
             
             do {
                 let provider = LocationProvider()
-                if let loc = try? await provider.fetchCurrentLocation() { self.update(loc.latitude, loc.longitude) }
-                for try await event in provider.monitor() { self.update(event.latitude, event.longitude) }
+                if let location = try? await provider.fetchCurrentLocation() { self?.update(location.latitude, location.longitude) }
+                for try await event in provider.monitor() { self?.update(event.latitude, event.longitude) }
             } catch {
-                self.error = error
-                self.isUpdating = false
+                self?.error = error
+                self?.isUpdating = false
             }
         }
         #endif
@@ -65,16 +82,16 @@ public final class LocationManager: @unchecked Sendable {
     
     public func stop() {
         #if os(iOS)
-        clManager.stopUpdatingLocation()
+        coreLocationManager.stopUpdatingLocation()
         #else
-        task?.cancel()
+        updateTask?.cancel()
         #endif
         isUpdating = false
     }
     
-    fileprivate func update(_ lat: Double, _ lon: Double) {
-        self.latitude = lat
-        self.longitude = lon
+    public func update(_ latitude: Double, _ longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
         self.error = nil
         self.permissionDenied = false
     }
@@ -82,22 +99,25 @@ public final class LocationManager: @unchecked Sendable {
 
 #if os(iOS)
 private final class LocationDelegate: NSObject, CLLocationManagerDelegate, @unchecked Sendable {
-    weak var parent: LocationManager?
-    init(parent: LocationManager) { self.parent = parent }
+    var parent: LocationManager?
     
-    func locationManager(_ m: CLLocationManager, didUpdateLocations locs: [CLLocation]) {
-        guard let loc = locs.last else { return }
-        Task { @MainActor in parent?.update(loc.coordinate.latitude, loc.coordinate.longitude) }
+    init(parent: LocationManager) {
+        self.parent = parent
     }
     
-    func locationManager(_ m: CLLocationManager, didFailWithError err: Error) {
-        guard let clError = err as? CLError, clError.code != .locationUnknown else { return }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor in parent?.update(location.coordinate.latitude, location.coordinate.longitude) }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        guard let LocationError = error as? CLError, LocationError.code != .locationUnknown else { return }
         Task { @MainActor in
-            if clError.code == .denied {
+            if LocationError.code == .denied {
                 parent?.permissionDenied = true
                 parent?.stop()
             } else {
-                parent?.error = err
+                parent?.error = error
             }
         }
     }
