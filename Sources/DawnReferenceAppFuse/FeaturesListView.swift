@@ -20,6 +20,7 @@ public struct FeaturesListView: View {
                     NavigationLink("Face ID & Biometrics", destination: BiometricView(viewModel: vm))
                     NavigationLink("Camera & Photo Library", destination: PhotoLibrary())
                     NavigationLink("Audio Recorder", destination: AudioView())
+                    NavigationLink("Location Services", destination: LocationView())
                 }
                 
                 Section("System & UI") {
