@@ -6,35 +6,62 @@
 //
 import SwiftUI
 
-
 public struct FeaturesListView: View {
     @State public var vm = BiometricViewModel()
-    
-    public init() {
+    @Bindable public var router: AppRouter
+
+    public init(router: AppRouter) {
+        self.router = router
     }
-    
+
     public var body: some View {
-        NavigationStack {
+        NavigationStack(path: $router.featuresPath) {
             List {
                 Section("Hardware & Sensors") {
-                    NavigationLink("Face ID & Biometrics", destination: BiometricView(viewModel: vm))
-                    NavigationLink("Camera & Photo Library", destination: PhotoLibrary())
+                    NavigationLink(
+                        "Face ID & Biometrics",
+                        destination: BiometricView(viewModel: vm)
+                    )
+                    NavigationLink(
+                        "Camera & Photo Library",
+                        destination: PhotoLibrary()
+                    )
                     NavigationLink("Audio Recorder", destination: AudioView())
-                    NavigationLink("Location Services", destination: LocationView())
+                    NavigationLink(
+                        "Location Services",
+                        destination: LocationView()
+                    )
                 }
-                
+
                 Section("System & UI") {
-                    NavigationLink("Presentations (Sheets)", destination: PresentationView())
-                    NavigationLink("Notifications", destination: NotificationView())
+                    NavigationLink(
+                        "Presentations (Sheets)",
+                        destination: PresentationView()
+                    )
+                    NavigationLink(
+                        "Notifications",
+                        destination: NotificationView()
+                    )
                     NavigationLink("Dates & Times", destination: DateTestView())
                 }
-                
+
                 Section("Architecture & Network") {
-                    NavigationLink("Network Connectivity", destination: NetworkView())
-                    NavigationLink("State Behaviour", destination: StateBehaviorView())
+                    NavigationLink(
+                        "Network Connectivity",
+                        destination: NetworkView()
+                    )
+                    NavigationLink(
+                        "State Behaviour",
+                        destination: StateBehaviorView()
+                    )
                 }
             }
             .navigationTitle("Features")
+            .navigationDestination(for: String.self) { route in
+                if route == "location" {
+                    LocationView()
+                }
+            }
         }
     }
 }

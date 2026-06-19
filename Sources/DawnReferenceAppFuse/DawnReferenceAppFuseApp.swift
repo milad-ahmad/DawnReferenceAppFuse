@@ -9,11 +9,15 @@ let logger: Logger = Logger(subsystem: "com.example.dawnreferenceappfuse", categ
 ///
 /// The default implementation merely loads the `ContentView` for the app and logs a message.
 /* SKIP @bridge */public struct DawnReferenceAppFuseRootView : View {
+    @State public var router = AppRouter()
     /* SKIP @bridge */public init() {
     }
     
     public var body: some View {
-        MainView()
+        MainView(router: router)
+            .onOpenURL { url in
+                router.handle(url: url)
+            }
     }
 }
 
