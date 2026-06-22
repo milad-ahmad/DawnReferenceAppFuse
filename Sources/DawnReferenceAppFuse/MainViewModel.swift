@@ -7,12 +7,21 @@
 
 import SwiftUI
 
-struct SwiftUIView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+@MainActor
+@Observable
+public final class MainViewModel {
+    public var router: AppRouter
 
-#Preview {
-    SwiftUIView()
+    public var showErrorAlert: Bool {
+        get { router.errorMessage != nil }
+        set {
+            if !newValue {
+                router.errorMessage = nil
+            }
+        }
+    }
+
+    public init(router: AppRouter) {
+        self.router = router
+    }
 }

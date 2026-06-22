@@ -2,38 +2,34 @@ import Foundation
 import SwiftUI
 
 public struct MainView: View {
-    @Bindable public var router: AppRouter
-    @State public var showErrorAlert: Bool = false
+    @State public var viewModel: MainViewModel
 
     public init(router: AppRouter) {
-        self.router = router
+        _viewModel = State(initialValue: MainViewModel(router: router))
     }
 
     public var body: some View {
-        TabView(selection: $router.selectedTab) {
+        @Bindable var vm = viewModel
+        
+        TabView(selection: $vm.router.selectedTab) {
 
             Tab("Home", systemImage: "house", value: 0) {
                 HomeView()
             }
 
             Tab("Features", systemImage: "list.bullet", value: 1) {
-                FeaturesListView(router: router)
+                FeaturesListView(router: viewModel.router)
             }
 
         }
         .tabViewStyle(.automatic)
-        .onChange(of: router.errorMessage) { _, newError in
-            if newError != nil {
-                showErrorAlert = true
-            }
-        }
         .alert(
             "Invalid Link",
-            isPresented: $showErrorAlert,
-            presenting: router.errorMessage
+            isPresented: $vm.showErrorAlert,
+            presenting: vm.router.errorMessage
         ) { _ in
             Button("OK", role: .cancel) {
-                router.errorMessage = nil
+                vm.router.errorMessage = nil
             }
         } message: { error in
             Text(error)
