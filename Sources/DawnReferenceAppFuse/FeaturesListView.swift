@@ -43,6 +43,7 @@ public struct FeaturesListView: View {
                         destination: NotificationView()
                     )
                     NavigationLink("Dates & Times", destination: DateTestView())
+                    NavigationLink("Deep Links", destination: DeepLinkTestView())
                 }
 
                 Section("Architecture & Network") {
@@ -60,6 +61,12 @@ public struct FeaturesListView: View {
             .navigationDestination(for: String.self) { route in
                 if route == "location" {
                     LocationView()
+                }
+                if route == "biometrics" {
+                    BiometricView(viewModel: vm)
+                }
+                if route == "camera" {
+                    PhotoLibrary()
                 }
             }
         }

@@ -33,6 +33,12 @@ public final class AppRouter {
         case "location":
             selectedTab = 1
             featuresPath.append("location")
+        case "biometrics":
+            selectedTab = 1
+            featuresPath.append("biometrics")
+        case "camera":
+            selectedTab = 1
+            featuresPath.append("camera")
         default:
             errorMessage = "Invalid route: \(url.absoluteString)"
             selectedTab = 0
