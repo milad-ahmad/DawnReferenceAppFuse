@@ -1,33 +1,32 @@
 package dawn.reference.app.fuse
 
-import skip.lib.*
-import skip.model.*
-import skip.foundation.*
-import skip.ui.*
-
 import android.Manifest
 import android.app.Application
-import android.os.Build
-import android.graphics.Color as AndroidColor
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.SystemBarStyle
-import androidx.activity.ComponentActivity
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.material3.MaterialTheme
 import androidx.core.app.ActivityCompat
+import skip.foundation.ProcessInfo
+import skip.foundation.SkipLogger
+import skip.ui.ColorScheme
+import skip.ui.ComposeContext
+import skip.ui.PresentationRoot
+import skip.ui.UIApplication
+import android.graphics.Color as AndroidColor
+
 internal val logger: SkipLogger = SkipLogger(subsystem = "dawn.reference.app.fuse", category = "DawnReferenceAppFuse")
 
 private typealias AppRootView = DawnReferenceAppFuseRootView
@@ -53,7 +52,7 @@ open class AndroidAppMain: Application {
 open class MainActivity: AppCompatActivity {
     constructor() {
     }
-
+    
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         val activityRef = java.lang.ref.WeakReference(this)

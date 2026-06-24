@@ -1,5 +1,5 @@
 //
-//  LifecycleValidationViewModel.swift
+//  ActivityViewModel.swift
 //  dawn-reference-app-fuse
 //
 //  Created by Milad Ahmad on 24-06-2026.
@@ -11,14 +11,14 @@ import Observation
 
 @MainActor
 @Observable
-public final class LifecycleValidationViewModel {
-    public var lifecycleEvents: [String] = []
-    public var retentionCounter: Int = 0
+public final class ActivityViewModel {
+    public var logs: [String] = []
+    public var counter: Int = 0
     
     public init() {}
     
     public func incrementCounter() {
-        retentionCounter += 1
+        counter += 1
     }
 
     public func logPhase(_ phaseName: String) {
@@ -26,6 +26,6 @@ public final class LifecycleValidationViewModel {
         formatter.timeStyle = .medium
         let timestamp = formatter.string(from: Date())
         
-        lifecycleEvents.insert("[\(timestamp)] \(phaseName)", at: 0)
+        logs.insert("[\(timestamp)] \(phaseName)", at: 0)
     }
 }
