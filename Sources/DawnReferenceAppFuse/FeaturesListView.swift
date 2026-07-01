@@ -55,6 +55,7 @@ public struct FeaturesListView: View {
                         "State Behaviour",
                         destination: StateBehaviorView()
                     )
+                    NavigationLink("Lifecycle", destination: ActivityView())
                 }
             }
             .navigationTitle("Features")
