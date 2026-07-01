@@ -41,14 +41,15 @@ Before you can run this project you must install Skip. In order to do that you c
 
 ### 7. Biometrics (Face ID / Touch ID)
 * **Goal:** Tests hardware-backed local authentication.
-* **Implementation:** Built using the native iOS `LocalAuthentication` framework for local unlocking.
+* **Implementation:** Built using the native iOS `LocalAuthentication` framework for local unlocking. Android has its own implementation using touch id. 
 * **Current Limitations:** This feature cannot be transpiled. There is currently no Skip package that supports Android biometric mapping. 
 * **Recommendation:** Android biometric authentication must be written completely natively in Android Studio (Kotlin).
+* **Developer Notes:** In order to use touch id on Android you have to set it up in the emulator settings first. 
 
 ### 8. Location Services
 * **Goal:** Tests requesting location permissions and reading live GPS coordinates.
 * **Implementation:** Platform-specific logic separated via `#if os(iOS)` directives. Uses native `CoreLocation` for iOS, and `SkipDevice` / `SkipKit` (`LocationProvider`) for Android.
-* **Developer Notes:** Implementations must be written per platform. Ensure `NSLocationWhenInUseUsageDescription` is set in `Info.plist` (iOS) and the corresponding location permissions are added to `AndroidManifest.xml` (Android).
+* **Developer Notes:** Implementations must be written per platform. Ensure `NSLocationWhenInUseUsageDescription` is set in `Info.plist` (iOS) and the corresponding location permissions are added to `AndroidManifest.xml` (Android). In order to see your longitude and latitude on Android you have to open Google Maps first to trigger the location sensor of the emulator for some reason.
 
 ### 9. Presentations & Sheets
 * **Goal:** Tests overlaying screens, specifically modals and full-screen covers.
